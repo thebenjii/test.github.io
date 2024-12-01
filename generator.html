@@ -2,25 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Night Sky Generator</title>
-    
-
+    <title>Celestial Maps - Night Sky Generator</title>
+    <!-- Include p5.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <!-- Include your JavaScript code -->
+    <script>
+        // Celestial Maps - Night Sky Generator
+        // Developed by Chime
 
         // Global variables
         let stars = [];
 
         function setup() {
+            // Create a canvas that fills the window
             createCanvas(windowWidth, windowHeight);
+            // Generate stars
             generateStars(200); // Adjust the number as desired
         }
 
         function draw() {
-            background(0);
+            background(0); // Black background to represent the night sky
             drawStars();
         }
 
         function generateStars(count) {
+            // Generate random stars with varying sizes and brightness
             for (let i = 0; i < count; i++) {
                 let star = {
                     x: random(width),
@@ -33,6 +39,7 @@
         }
 
         function drawStars() {
+            // Draw each star as a point or small ellipse
             noStroke();
             for (let star of stars) {
                 fill(star.brightness);
@@ -41,16 +48,19 @@
         }
 
         function windowResized() {
+            // Adjust canvas size when the window is resized
             resizeCanvas(windowWidth, windowHeight);
+            // Regenerate stars to fit the new size
             stars = [];
             generateStars(200);
         }
     </script>
+    <!-- Optional CSS styles -->
     <style>
         body {
             margin: 0;
-            overflow: hidden;
-            background-color: #000;
+            overflow: hidden; /* Prevent scrollbars */
+            background-color: #000; /* Black background */
         }
         /* Back button styles */
         #backButton {
@@ -73,6 +83,8 @@
     </style>
 </head>
 <body>
+    <!-- Add a back button -->
     <button id="backButton" onclick="window.location.href='index.html'">Back to Home</button>
+    <!-- The canvas will be automatically added by p5.js -->
 </body>
 </html>
