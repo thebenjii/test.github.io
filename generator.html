@@ -4,60 +4,60 @@
    <meta charset="UTF-8">
    <title>Night Sky Generator</title>
 
+   <!-- Include p5.js library -->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
 
+   <!-- Your JavaScript code -->
+   <script>
+     let stars = [];
 
-  <script>
-    let stars = [];
+     function setup() { 
+       createCanvas(windowWidth, windowHeight);
+       makeStars(random(100, 501));
+     }
 
-    function setup() 
-    { 
-            createCanvas(windowWidth, windowHeight);
-            MakeStars(random(100, 501));
-    }
+     function draw() {
+       background(0); 
+       drawStars();
+     }
 
-   function draw() 
-   {
-            background(0); 
-            drawStar();
-   }
+     function makeStars(iter) { 
+       stars = []; 
+       for (let i = 0; i < iter; i++) {
+         let star = {
+           x: random(width),
+           y: random(height),
+           size: random(1, 4),
+           brightness: random(100, 240)
+         };
+         stars.push(star);
+       }
+     }
 
-    function MakeStars(iter) 
-    { 
-            stars = []; 
-            for (let i = 0; i < iter; i++) 
-            {
-                let star = 
-                {
-                    x: random(width),
-                    y: random(height),
-                    size: random(1, 4),
-                    brightness: random(100, 240)
-                };
-                stars.push(star);
-            }
-      }
+     function drawStars() {
+       noStroke();
+       for (let star of stars) {
+         fill(star.brightness);
+         ellipse(star.x, star.y, star.size);
+       }
+     }
 
-     function drawStar() 
-     {
-            noStroke();
-            for (let star of stars) 
-            {
-                fill(star.brightness);
-                ellipse(star.x, star.y, star.size);
-            }
-        }
+     function windowResized() {
+       resizeCanvas(windowWidth, windowHeight);
+       makeStars(stars.length);
+     }
+   </script>
 
- <style>
-        body {
-            margin: 0;
-           /* overflow: hidden; */
-            background-color: #000; 
-        }
-<style>
-    
- <script>
-  
-
-  </body>
+   <!-- Your CSS styles -->
+   <style>
+     body {
+       margin: 0;
+       /* overflow: hidden; */
+       background-color: #000; 
+     }
+   </style>
+</head>
+<body>
+  <!-- The canvas will be automatically added by p5.js -->
+</body>
 </html>
