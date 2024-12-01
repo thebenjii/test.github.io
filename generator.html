@@ -1,61 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <title>Night Sky Generator</title>
+  <meta charset="UTF-8">
+  <title>Night Sky Generator</title>
+  <!-- Include p5.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+  <!-- Your JavaScript code -->
+  <script>
+    let stars = [];
+    let planets = [];
+    let shootingStars = [];
 
-   <!-- Include p5.js library -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    function setup() { 
+      createCanvas(windowWidth, windowHeight);
+      let starCount = floor(random(100, 501));
+      makeStars(starCount);
+      let planetCount = floor(random(1, 4)); // Random number of planets
+      makePlanets(planetCount);
+    }
 
-   <!-- Your JavaScript code -->
-   <script>
-     let stars = [];
+    function draw() {
+      background(0); 
+      drawStars();
+      drawPlanets();
+      handleShootingStars();
+    }
 
-     function setup() { 
-       createCanvas(windowWidth, windowHeight);
-       makeStars(random(100, 501));
-     }
+    function makeStars(count) { 
+      stars = []; 
+      for (let i = 0; i < count; i++) {
+        let star = {
+          x: random(width),
+          y: random(height),
+          size: random(1, 4),
+          brightness: random(100, 240)
+        };
+        stars.push(star);
+      }
+    }
 
-     function draw() {
-       background(0); 
-       drawStars();
-     }
+    function drawStars() {
+      noStroke();
+      for (let star of stars) {
+        fill(star.brightness);
+        ellipse(star.x, star.y, star.size);
+      }
+    }
 
-     function makeStars(iter) { 
-       stars = []; 
-       for (let i = 0; i < iter; i++) {
-         let star = {
-           x: random(width),
-           y: random(height),
-           size: random(1, 4),
-           brightness: random(100, 240)
-         };
-         stars.push(star);
-       }
-     }
+    function makePlanets(count) {
+      planets = [];
+      for (let i = 0; i < count; i++) {
+        let planet = {
+          x: random(width),
+          y: random(height / 2), // Upper half of the sky
+          size: random(30, 60),
+          color: color(random(50, 255), random(50, 255), random(50, 255))
+        };
+        planets.push(planet);
+      }
+    }
 
-     function drawStars() {
-       noStroke();
-       for (let star of stars) {
-         fill(star.brightness);
-         ellipse(star.x, star.y, star.size);
-       }
-     }
+    function drawPlanets() {
+      noStroke();
+      for (let planet of planets) {
+        // Draw the planet
+        fill(planet.color);
+        ellipse(planet.x, planet.y, planet.size);
+        // Glow effect
+        for (let i = 1; i <= 5; i++) {
+          let alpha = map(i, 1, 5, 100, 0);
+          fill(red(planet.color), green(planet.color), blue(planet.color), alpha);
+          ellipse(planet.x, planet.y, planet.size + i * 10);
+        }
+      }
+    }
 
-     function windowResized() {
-       resizeCanvas(windowWidth, windowHeight);
-       makeStars(stars.length);
-     }
-   </script>
+    function createShootingStar() {
+      let star = {
+        x: random(width),
+        y: random(-height / 2, 0),
+        speedX: random(-10, -5),
+        speedY: random(5, 10),
+        length: random(50, 100),
+        life: random(30, 60) // Frames
+      };
+      shootingStars.push(star);
+    }
 
-   <!-- Your CSS styles -->
-   <style>
-     body {
-       margin: 0;
-       /* overflow: hidden; */
-       background-color: #000; 
-     }
-   </style>
+    function handleShootingStars() {
+      // Randomly create shooting stars
+      if (random(1) < 0.01) {
+        createShootingStar();
+      }
+
+      // Update and draw shooting stars
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        let star = shootingStars[i];
+        star.x += star.speedX;
+        star.y += star.speedY;
+        star.life--;
+
+        // Draw the shooting star
+        stroke(255);
+        strokeWeight(2);
+        line(star.x, star.y, star.x + star.length, star.y + star.length);
+
+        // Remove the star if its life is over
+        if (star.life <= 0) {
+          shootingStars.splice(i, 1);
+        }
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+      let starCount = stars.length;
+      makeStars(starCount);
+      let planetCount = planets.length;
+      makePlanets(planetCount);
+      shootingStars = []; // Clear existing shooting stars
+    }
+  </script>
+  <!-- CSS styles -->
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden; /* Prevent scrollbars */
+      background-color: #000; 
+    }
+  </style>
 </head>
 <body>
   <!-- The canvas will be automatically added by p5.js -->
