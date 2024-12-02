@@ -9,78 +9,118 @@
    <script>
       let stars = [];
       let planets = [];
+      let oldStars = [];
+      let oldPlanets = [];
+      let regenerateInterval = 10000; // Time in milliseconds (e.g., 10000ms = 10 seconds)
+      let lastRegenerateTime = 0;
+      let fade = 0;
+      let fading = false;
 
-      function setup() 
-      { 
+      function setup() { 
           createCanvas(windowWidth, windowHeight);
-          makeStars(random(100, 501));
-          makePlanets(random(1, 9));
+          generateSky();
+          lastRegenerateTime = millis();
       }
 
-      function draw() 
-      {
+      function draw() {
           background(0); 
-          drawStars();
-          drawPlanets();
+
+          if (fading) {
+              // Draw old sky
+              drawSky(oldStars, oldPlanets);
+              // Draw new sky with increasing opacity
+              push();
+              tint(255, fade);
+              drawSky(stars, planets);
+              pop();
+
+              fade += 5; // Adjust fade speed as desired
+              if (fade >= 255) {
+                  fade = 255;
+                  fading = false;
+                  oldStars = [];
+                  oldPlanets = [];
+              }
+          } else {
+              drawSky(stars, planets);
+          }
+
+          // Check if it's time to regenerate the sky
+          if (millis() - lastRegenerateTime > regenerateInterval && !fading) {
+              startFade();
+              lastRegenerateTime = millis();
+          }
       }
 
-      function makeStars(iter) 
-      { 
-          stars = []; 
-          for (let i = 0; i < iter; i++) 
-          {
-              let star = 
-              {
+      function drawSky(starsArray, planetsArray) {
+          drawStars(starsArray);
+          drawPlanets(planetsArray);
+      }
+
+      function generateSky() {
+          let starCount = floor(random(100, 501));
+          stars = makeStars(starCount);
+          let planetCount = floor(random(1, 9));
+          planets = makePlanets(planetCount);
+      }
+
+      function startFade() {
+          oldStars = stars;
+          oldPlanets = planets;
+          generateSky();
+          fade = 0;
+          fading = true;
+      }
+
+      function makeStars(count) { 
+          let tempStars = [];
+          for (let i = 0; i < count; i++) {
+              let star = {
                   x: random(width),
                   y: random(height),
                   size: random(1, 4),
                   brightness: random(100, 240)
               };
-              stars.push(star);
+              tempStars.push(star);
           }
+          return tempStars;
       }
 
-      function drawStars() 
-      {
+      function drawStars(starsArray) {
           noStroke();
-          for (let star of stars) 
-          {
+          for (let star of starsArray) {
               fill(star.brightness);
               ellipse(star.x, star.y, star.size);
           }
       }
 
-      function makePlanets(iter) 
-      {
-          planets = [];
-          for (let i = 0; i < iter; i++) 
-          {
-              let planet = 
-              {
+      function makePlanets(count) {
+          let tempPlanets = [];
+          for (let i = 0; i < count; i++) {
+              let planet = {
                   x: random(width),
                   y: random(height), 
                   size: random(5, 15),
                   color: color(random(50, 255), random(50, 255), random(50, 255))
               };
-              planets.push(planet);
+              tempPlanets.push(planet);
           }
+          return tempPlanets;
       }
 
-      function drawPlanets() 
-      {
+      function drawPlanets(planetsArray) {
           noStroke();
-          for (let planet of planets) 
-          {
+          for (let planet of planetsArray) {
               fill(planet.color);
               ellipse(planet.x, planet.y, planet.size);
           }
-      }  
+      }
 
-      // Optional: Handle window resizing
+      // Handle window resizing
       function windowResized() {
           resizeCanvas(windowWidth, windowHeight);
-          makeStars(stars.length);
-          makePlanets(planets.length);
+          generateSky();
+          lastRegenerateTime = millis();
       }
    </script>
 
@@ -88,7 +128,7 @@
    <style>
       body {
           margin: 0;
-          /* overflow: hidden; */
+          overflow: hidden;
           background-color: #000; 
       }
    </style>
