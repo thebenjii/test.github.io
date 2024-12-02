@@ -53,7 +53,7 @@
         let planet = {
           x: random(width),
           y: random(height / 2), // Upper half of the sky
-          size: random(30, 60),
+          size: random(5, 10),
           color: color(random(50, 255), random(50, 255), random(50, 255))
         };
         planets.push(planet);
@@ -66,11 +66,12 @@
         // Draw the planet
         fill(planet.color);
         ellipse(planet.x, planet.y, planet.size);
-        // Glow effect
+        /*// Glow effect
         for (let i = 1; i <= 5; i++) {
           let alpha = map(i, 1, 5, 100, 0);
           fill(red(planet.color), green(planet.color), blue(planet.color), alpha);
           ellipse(planet.x, planet.y, planet.size + i * 10);
+          */
         }
       }
     }
