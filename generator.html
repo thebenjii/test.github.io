@@ -2,138 +2,77 @@
 <html lang="en">
 <head>
    <meta charset="UTF-8">
-   <title>Night Sky Generator</title>
-   <!-- Include p5.js library -->
+   <title>Test Night Sky</title>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
-   <!-- Your JavaScript code -->
    <script>
       let stars = [];
       let planets = [];
-      let oldStars = [];
-      let oldPlanets = [];
-      let regenerateInterval = 10000; // Time in milliseconds (e.g., 10000ms = 10 seconds)
-      let lastRegenerateTime = 0;
-      let fade = 0;
-      let fading = false;
 
-      function setup() { 
-          createCanvas(windowWidth, windowHeight);
-          generateSky();
-          lastRegenerateTime = millis();
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        // Generate a small number of stars to test
+        for (let i = 0; i < 50; i++) {
+          let star = {
+            x: random(width),
+            y: random(height),
+            size: random(1, 4),
+            brightness: random(150, 255)
+          };
+          stars.push(star);
+        }
       }
 
       function draw() {
-          background(0); 
-
-          if (fading) {
-              // Draw old sky
-              drawSky(oldStars, oldPlanets);
-              // Draw new sky with increasing opacity
-              push();
-              tint(255, fade);
-              drawSky(stars, planets);
-              pop();
-
-              fade += 5; // Adjust fade speed as desired
-              if (fade >= 255) {
-                  fade = 255;
-                  fading = false;
-                  oldStars = [];
-                  oldPlanets = [];
-              }
-          } else {
-              drawSky(stars, planets);
-          }
-
-          // Check if it's time to regenerate the sky
-          if (millis() - lastRegenerateTime > regenerateInterval && !fading) {
-              startFade();
-              lastRegenerateTime = millis();
-          }
+        background(0); 
+        drawStars();
+        drawPlanets();
+        drawInstructions();
       }
 
-      function drawSky(starsArray, planetsArray) {
-          drawStars(starsArray);
-          drawPlanets(planetsArray);
+      function drawStars() {
+        noStroke();
+        for (let star of stars) {
+          fill(star.brightness);
+          ellipse(star.x, star.y, star.size);
+        }
       }
 
-      function generateSky() {
-          let starCount = floor(random(100, 501));
-          stars = makeStars(starCount);
-          let planetCount = floor(random(1, 9));
-          planets = makePlanets(planetCount);
+      function drawPlanets() {
+        noStroke();
+        for (let planet of planets) {
+          fill(255,0,0); // Red color for simplicity
+          ellipse(planet.x, planet.y, 10);
+        }
       }
 
-      function startFade() {
-          oldStars = stars;
-          oldPlanets = planets;
-          generateSky();
-          fade = 0;
-          fading = true;
+      // On mouse press, add a planet at the mouse location
+      function mousePressed() {
+        let newPlanet = {
+          x: mouseX,
+          y: mouseY
+        };
+        planets.push(newPlanet);
+        console.log("Planet added at:", mouseX, mouseY);
       }
 
-      function makeStars(count) { 
-          let tempStars = [];
-          for (let i = 0; i < count; i++) {
-              let star = {
-                  x: random(width),
-                  y: random(height),
-                  size: random(1, 4),
-                  brightness: random(100, 240)
-              };
-              tempStars.push(star);
-          }
-          return tempStars;
+      function drawInstructions() {
+        fill(255);
+        textSize(16);
+        textAlign(CENTER, CENTER);
+        text("Click to add a red planet", width / 2, height - 30);
       }
 
-      function drawStars(starsArray) {
-          noStroke();
-          for (let star of starsArray) {
-              fill(star.brightness);
-              ellipse(star.x, star.y, star.size);
-          }
-      }
-
-      function makePlanets(count) {
-          let tempPlanets = [];
-          for (let i = 0; i < count; i++) {
-              let planet = {
-                  x: random(width),
-                  y: random(height), 
-                  size: random(5, 15),
-                  color: color(random(50, 255), random(50, 255), random(50, 255))
-              };
-              tempPlanets.push(planet);
-          }
-          return tempPlanets;
-      }
-
-      function drawPlanets(planetsArray) {
-          noStroke();
-          for (let planet of planetsArray) {
-              fill(planet.color);
-              ellipse(planet.x, planet.y, planet.size);
-          }
-      }
-
-      // Handle window resizing
       function windowResized() {
-          resizeCanvas(windowWidth, windowHeight);
-          generateSky();
-          lastRegenerateTime = millis();
+        resizeCanvas(windowWidth, windowHeight);
       }
    </script>
-
-   <!-- CSS styles -->
    <style>
       body {
-          margin: 0;
-          overflow: hidden;
-          background-color: #000; 
+        margin: 0;
+        background-color: #000; 
       }
    </style>
 </head>
 <body>
-  <!-- The canvas will be automatically added by p5.js -->
 </body>
 </html>
